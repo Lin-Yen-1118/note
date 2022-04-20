@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue3-響應式原理
+    </title>
+</head>
+  <p>Vue3-響應式原理</p>
+
+    <script type="text/javascript">
+      //源數據
+      let person = {
+        name: "張三",
+        age: 18
+      };
+      //模擬Vue2中實現響應式
+      //#region
+      /*
+      let p = {}
+      Object.defineProperty(p, "name", {
+        configurable:true,
+        get() {
+          //有人讀取name時調用
+          return person.name;
+        },
+        set(value) {
+          //有人修改name時調用
+          console.log("有人修改了name屬性，我發現了，我要去更新介面!");
+          person.name = value;
+        }
+      });
+      Object.defineProperty(p, "age", {
+        get() {
+          //有人讀取name時調用
+          return person.age;
+        },
+        set(value) {
+          //有人修改name時調用
+          console.log("有人修改了age屬性，我發現了，我要去更新介面!");
+          person.age = value;
+        }
+      });
+      */
+      //#endregion
+
+      //模擬Vue3中實現響應式
+      //window.Proxy
+      //Proxy 就是 代理 ， Reflect 就是 反射
+      //可以映射 p 對 person 的操作
+
+      //通過Proxy (代理) :攔截對象中任意屬性的變化，包括: 屬性值的讀寫、屬性的添加、屬性的刪除等。
+      //通過 Reflect (反射): 對源對象的屬性進行操作。
+      
+      const p = new Proxy(person,{
+        //讀，有人讀取 p 的某個屬性時調用
+        get(target,propName){
+          //console.log("有人讀取了p身上的某個屬性",target,propName)
+          //target:觸發的源頭 ，在這邊是person
+          //propName: 修改的屬性的名
+          console.log("有人讀取了p身上的${propName}屬性")
+          //return target[propName]
+          return Reflect.get(target,propName)//改成這樣材是vue3的響應式
+        },
+        //改+新增，有人修改或新增 p 的某個屬性時調用
+        set(target,propName,value){
+          //value 修改的值
+          console.log(target,propName,value)
+          console.log("有人修改p身上的${propName}屬性，我要去更新介面")
+          //target[propName] = value
+          return Reflect.set(target,propName,value)//改成這樣材是vue3的響應式
+        },
+        //刪，有人刪除 p 的某個屬性時調用
+        deleteProperty(target,propName){
+          console.log("有人刪除p身上的${propName}屬性，我要去更新介面")
+          //return delete target[propName] 
+          return Reflect.deleteProperty(target,propName)//改成這樣材是vue3的響應式
+        }
+      })
+
+
+      let obj ={a:1,b:2}
+      //window.Reflect 映射
+
+      //Reflect 有返回值
+      //對框架操作來說，用Reflect比起使用Object還要友善(不用寫那麼多try catch)
+      const x1 = Reflect.defineProperty(obj , 'c' ,{
+          get(){
+            return 3
+          },
+        } 
+      )
+      console.log(x1)
+      const x2 = Reflect.defineProperty(obj , 'c' ,{
+          get(){
+            return 4
+          },
+        } 
+      )
+      console.log(x2)
+      if(x2){
+        console.log("操作成功")
+      }else{
+        console.log("操作失敗")
+      }
+
+      
+    </script>
+  </body>
+</html>
