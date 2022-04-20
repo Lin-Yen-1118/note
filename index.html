@@ -61,7 +61,7 @@
           //propName: 修改的屬性的名
           console.log("有人讀取了p身上的${propName}屬性")
           //return target[propName]
-          return Reflect.get(target,propName)//改成這樣材是vue3的響應式
+          return Reflect.get(target,propName)//改成這樣才是vue3的響應式
         },
         //改+新增，有人修改或新增 p 的某個屬性時調用
         set(target,propName,value){
@@ -69,13 +69,13 @@
           console.log(target,propName,value)
           console.log("有人修改p身上的${propName}屬性，我要去更新介面")
           //target[propName] = value
-          return Reflect.set(target,propName,value)//改成這樣材是vue3的響應式
+          return Reflect.set(target,propName,value)//改成這樣才是vue3的響應式
         },
         //刪，有人刪除 p 的某個屬性時調用
         deleteProperty(target,propName){
           console.log("有人刪除p身上的${propName}屬性，我要去更新介面")
           //return delete target[propName] 
-          return Reflect.deleteProperty(target,propName)//改成這樣材是vue3的響應式
+          return Reflect.deleteProperty(target,propName)//改成這樣才是vue3的響應式
         }
       })
 
